@@ -1,32 +1,55 @@
-name: 🚀 Deploy to GitHub Pages
+# Nome do Workflow
+name: Deploy React App to GitHub Pages
 
+# Gatilho: Executar sempre que houver um push na branch 'main'
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  workflow_dispatch:
 
+# Permissões necessárias para o job poder publicar no GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Tarefas a serem executadas
 jobs:
+  # Tarefa de build e deploy
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # Usar a versão mais recente do Ubuntu
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      # 1. Baixar o código do repositório
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      # 2. Configurar o ambiente Node.js
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20' # Use uma versão LTS do Node.js
+          cache: 'npm' # Habilitar cache para o npm
 
+      # 3. Instalar as dependências do projeto
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Build site
+      # 4. Compilar o projeto (gera a pasta 'dist')
+      - name: Build
         run: npm run build
 
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
+      # 5. Configurar o GitHub Pages para o deploy
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 6. Fazer o upload dos artefatos da build (conteúdo da pasta 'dist')
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./dist
+          path: './dist'
+
+      # 7. Fazer o deploy no GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
