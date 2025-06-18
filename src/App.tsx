@@ -140,7 +140,7 @@ function App() {
             <div className="flex flex-col items-center mb-8">
               <div className="w-32 h-32 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 p-1 mb-6 shadow-2xl">
                 <img 
-                  src="SWisleyTTV/perfil.jpg" 
+                  src="/perfil.jpg" 
                   alt="SWisleyTTV Profile" 
                   className="w-full h-full rounded-full object-cover"
                 />
